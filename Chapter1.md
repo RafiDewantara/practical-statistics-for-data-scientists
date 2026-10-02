@@ -1,32 +1,32 @@
 # Chapter 1 — Exploratory Data Analysis
 
-**Reference:** Peter Bruce, Andrew Bruce, and Peter Gedeck, *Practical Statistics for Data Scientists*, 2nd Edition, O'Reilly Media, 2020.
+**Referensi:** Peter Bruce, Andrew Bruce, dan Peter Gedeck, *Practical Statistics for Data Scientists*, 2nd Edition, O'Reilly Media, 2020.
 
 ## 1. Overview
 
-Exploratory Data Analysis (EDA) is the process of examining a dataset before applying statistical models or machine-learning algorithms. The main purpose is to understand the structure, typical values, variability, distributions, unusual observations, and relationships among variables.
+Exploratory Data Analysis (EDA) adalah proses memeriksa dataset sebelum menggunakan model statistika atau algoritma machine learning. Tujuan utama dari proses ini untuk memahami stukture, values, distribusi, observasi, dan relasi dari variables yang ada.
 
-The chapter begins with structured data and focuses mainly on rectangular data: rows represent records and columns represent variables or features. It then introduces measures of location and variability, methods for visualizing distributions, categorical variables, correlation, scatterplots, and methods for exploring several variables together.
+Chapter satu berfokus kepada struktur dan rectangular data atau jenis data yang direpresentasikan dalam bentuk dua dimensi, yaitu baris untuk records, dan kolom untuk variable. Pada bagian ini juga diperkenalkan perhitungan lokasi variabilitas, visualisasi distribusi, kategori variable, korelasi, scatterplot, dan cara untuk eksplorasi beberapa variabel secara bersamaan.
 
 ## 2. Structured Data
 
-Structured data can be represented in a table. Numeric variables can be continuous or discrete, while categorical variables can be binary or ordinal.
+Struktur data dapat direpresentasikan pada tabel dengan variabel numerik yang kontinu atau diskrit, dengan kategori variabel yang biner atau ordinal.
 
-- **Continuous:** can take many values within an interval.
-- **Discrete:** generally represents counts.
-- **Categorical:** represents membership in a finite set of categories.
-- **Binary:** has two categories, such as 0/1 or yes/no.
-- **Ordinal:** categorical values with a meaningful order.
+- **Kontinu:** dapat mengambil beberapa nilai dalam satu interval.
+- **Diskrit:** umumnya merepresentasikan perhitungan/counts.
+- **Kategori:** representasi membership pada kumpulan kategori.
+- **Biner:** memiliki dua kategori yaitu 0-1 atau iya-tidak.
+- **Ordinal:** menilai kategori dengan urutan yang bermakna.
 
-In data science, a rectangular dataset is often stored as a pandas `DataFrame`.
+Pada ilmu data, rectangular dataset biasanya disimpan secara pandas `DataFrame`.
 
 ```python
 import pandas as pd
 
 df = pd.DataFrame({
-    "age": [20, 22, 25, 28, 31],
-    "study_hours": [2, 4, 5, 7, 8],
-    "major": ["CE", "CE", "EE", "CE", "EE"],
+    "umur": [20, 22, 25, 28, 31],
+    "jam_belajar": [2, 4, 5, 7, 8],
+    "fakultas": ["FTE", "FIK", "FEB", "FRI", "FIT"],
     "passed": [0, 1, 1, 1, 1]
 })
 
@@ -34,13 +34,13 @@ print(df.head())
 print(df.info())
 ```
 
-## 3. Measures of Location
+## 3. Mengukur Lokasi
 
-A measure of location describes a typical or central value.
+Lokasi pada buku ini mendeskripsikan nilai yang sentral.
 
 ### Mean
 
-The arithmetic mean is
+Aritmatika mean adalah
 
 \[
 \bar{x} = \frac{1}{n}\sum_{i=1}^{n}x_i.
@@ -54,11 +54,11 @@ x = np.array([10, 12, 13, 15, 20])
 print("Mean:", np.mean(x))
 ```
 
-The mean uses every observation, but it can be strongly affected by extreme values.
+Mean menggunakan setiap observasi, tetapi dapat terpengaruh dengan nilai yang ekstrim.
 
 ### Median
 
-The median is the middle value after sorting the observations. It is more resistant to outliers than the mean.
+Median adalah nilai tengah setelah data observasi diurutkan. Hasilnya lebih resistan pada nilai ekstrim daripada mean.
 
 ```python
 print("Median:", np.median(x))
@@ -66,7 +66,7 @@ print("Median:", np.median(x))
 
 ### Trimmed Mean
 
-A trimmed mean removes a specified proportion of the smallest and largest observations before calculating the mean. It provides a compromise between the ordinary mean and more robust measures such as the median.
+A trimmed mean atau mean berkondisi menghapus porsi spesifik dari observasi terbesar dan terkecil sebelum dilakukan kalkulasi. Fungsinya adalah agar nilai ektrim tidak terlalu mempengaruhi mean dan lebih kokoh daripada median.
 
 ```python
 from scipy.stats import trim_mean
@@ -76,26 +76,26 @@ print("10% trimmed mean:", trim_mean(x, 0.1))
 
 ### Weighted Mean
 
-When observations have different importance or represent different population proportions, a weighted mean can be appropriate.
+Saat observasi memiliki kepentingan atau proporsi populasi yang berbeda, lebih baik digunakan weighted mean.
 
 ```python
 weights = np.array([1, 1, 2, 2, 3])
 print(np.average(x, weights=weights))
 ```
 
-## 4. Measures of Variability
+## 4. Mengukur Variabilitas
 
-Location alone does not describe a dataset. Two datasets may have the same mean but very different amounts of spread.
+Lokasi bila sendiri tidak dapat mendeskripsikan sebuah dataset. Dua dataset mungkin memiliki dua mean yang sama, tetapi jumlah penyebaran yang berbeda.
 
 ### Variance and Standard Deviation
 
-Sample variance is
+Sample variance adalah
 
 \[
 s^2 = \frac{\sum_{i=1}^{n}(x_i-\bar{x})^2}{n-1}.
 \]
 
-Standard deviation is
+Standard deviation adalah
 
 \[
 s = \sqrt{s^2}.
@@ -108,13 +108,13 @@ print("Standard deviation:", np.std(x, ddof=1))
 
 ### Interquartile Range
 
-The interquartile range is
+The interquartile range adalah
 
 \[
 IQR = Q_{75}-Q_{25}.
 \]
 
-It describes the spread of the middle 50% of observations and is less sensitive to extreme values than the range.
+Ini menjelaskan penyebaran dari tengah (50%) observasi dan tidak terlalu sensitif terhadap nilai ekstrim daripada range.
 
 ```python
 q1 = np.percentile(x, 25)
@@ -124,7 +124,7 @@ print("IQR:", q3 - q1)
 
 ### Median Absolute Deviation
 
-The median absolute deviation (MAD) is based on distances from the median and is a robust measure of variability.
+The median absolute deviation (MAD) berdasarkan jarak dari median dan kokoh terhadap pengukuran varibilitas. 
 
 ```python
 from statsmodels.robust.scale import mad
@@ -132,9 +132,9 @@ from statsmodels.robust.scale import mad
 print("MAD:", mad(x))
 ```
 
-## 5. Exploring Distributions
+## 5. Menjelajahi Distributions
 
-A distribution shows how values are spread across their possible range.
+Sebuah distribusi memperlihatkan bagaimana nilai disebarkan terhadap rentang yang dimiliki.
 
 ### Histogram
 
@@ -150,7 +150,7 @@ plt.show()
 
 ### Boxplot
 
-A boxplot provides a compact view of the median, quartiles, and potential extreme observations.
+Boxplot menyediakan tampilan tersusun dari median, quartil, dan potensi observasi ekstrim.
 
 ```python
 plt.boxplot(x)
@@ -159,26 +159,26 @@ plt.title("Boxplot")
 plt.show()
 ```
 
-Percentiles are especially useful for describing skewed data because they do not require the distribution to be symmetric.
+Terutama persentase yang berguna untuk menjelaskan data yang melenceng karena tidak membutuhkan distribusi yang simetris.
 
-## 6. Categorical Data
+## 6. Kategori Data
 
-For categorical variables, frequency tables are often more informative than means.
+Untuk kategori variable, frekuensi tabel biasanya lebih informatif daripada mean.
 
 ```python
-print(df["major"].value_counts())
-print(df["passed"].value_counts(normalize=True))
+print(df["fakultas"].value_counts())
+print(df["lulus"].value_counts(normalize=True))
 ```
 
-The **mode** is the most frequently occurring category.
+**mode** adalah kategori yang paling sering muncul.
 
-For a binary variable, the proportion of observations in each category can be interpreted as an empirical probability.
+Untuk variabel biner, proporsi observasi dari tiap kategori dapat diinterpretasikan dengan probabilitas empiris.
 
-## 7. Correlation
+## 7. Korelasi
 
-Correlation measures the strength and direction of association between numerical variables.
+Mengukur kekuatan dan arah asosiasi antara variabel numerik.
 
-Pearson's correlation coefficient is
+Pearson's correlation coefficient adalah
 
 \[
 r =
@@ -186,34 +186,33 @@ r =
 {\sqrt{\sum_i(x_i-\bar{x})^2}\sqrt{\sum_i(y_i-\bar{y})^2}}.
 \]
 
-Its value ranges from -1 to +1.
+bernilai dari -1 sampai +1.
 
 ```python
-print(df[["age", "study_hours", "passed"]].corr())
+print(df[["umur", "jam_belajar", "passed"]].corr())
 ```
 
-A positive correlation means that larger values of one variable tend to be associated with larger values of the other. A negative correlation indicates the opposite pattern.
+Korelasi yang positif menandakan nilai variabel yang besar cenderung berasosiasi dengan nilai besar lainnya. Sedangkan korelasi negatif menandakan pola yang sebaliknya.
 
-Correlation should not automatically be interpreted as causation. A third variable, selection effects, or other mechanisms may explain an observed association.
+Korelasi seharusnya tidak otomatis diinterpretasikan sebagai kausalitas, variabel ketiga, efek seleksi, atau mekanisme lainnya yang dijelaskan pada asosiasi yang terobservasi.
 
 ## 8. Scatterplots
 
-Scatterplots are useful for examining relationships between two numerical variables.
+Scatterplots berguna untuk meneliti hubungan antara dua variabel numerik.
 
 ```python
-plt.scatter(df["study_hours"], df["age"])
-plt.xlabel("Study Hours")
-plt.ylabel("Age")
-plt.title("Study Hours vs Age")
+plt.scatter(df["jam_belajar"], df["umur"])
+plt.xlabel("Jam Belajar")
+plt.ylabel("Umum")
+plt.title("Jam Belajar vs Umur")
 plt.show()
 ```
 
-Visual inspection can reveal nonlinear relationships, clusters, outliers, and changing variability.
+Inspeksi visual dapat memperlihatkan hubungan nonlinear, kluster, outlier, dan perubahan variabilitas.
 
-## 9. Exploring Multiple Variables
+## 9. Explorasi Beberapa Variable
 
-Real datasets contain many variables. Useful tools include:
-
+Dataset nyata memiliki banyak variabel. Tool yang berguna dan dapat digunakan antara lain yaitu:
 - correlation matrices,
 - grouped summaries,
 - scatterplots,
@@ -222,7 +221,7 @@ Real datasets contain many variables. Useful tools include:
 - contour plots,
 - and multivariable visualizations.
 
-Example:
+Contoh:
 
 ```python
 import seaborn as sns
@@ -231,26 +230,22 @@ sns.pairplot(df[["age", "study_hours", "passed"]])
 plt.show()
 ```
 
-## 10. Practical EDA Workflow
+## 10. EDA Workflow Praktis
 
-A practical workflow is:
+Workflow yang praktis adalah:
 
-1. Inspect the rows and columns.
-2. Identify variable types.
-3. Check missing values and unusual observations.
-4. Calculate measures of location.
-5. Calculate measures of variability.
-6. Visualize distributions.
-7. Examine relationships among variables.
-8. Investigate possible outliers.
-9. Only then proceed to statistical modeling.
+1. Inspeksi baris and kolom.
+2. Identifikasi tipe variabel.
+3. Cek nilai yang hilang dan observasi yang tidak biasa.
+4. Kalkulasi ukuran dari lokasi.
+5. Kalkulasi ukuran dari variabilitas.
+6. Visualisasi distribusi.
+7. Menyelidiki relasi dari variabel.
+8. Investigasi kemungkinan outliers.
+9. Melanjutkan ke statistical modeling.
 
 ## 11. Conclusion
 
-The main lesson of this chapter is that statistical analysis should begin with understanding the data. Mean and standard deviation provide useful numerical summaries, while median, percentiles, and MAD can be more robust when outliers or skewed distributions are present. Graphical methods such as histograms, boxplots, and scatterplots reveal patterns that a single statistic may hide.
+Pembelajaran utama dari chapter ini yaitu analisis statistika seharusnya dimulai dari pengertian data itu sendiri. Mean dan standar deviasi menyediakan ringkasan yang berguna, sedangkan median, persentase, dan MAD lebih kokoh bila terjadi outlier atau distribusi yang condong terjadi. Metode grafik seperti histograms, boxplots, dan scatterplots memperlihatkan pola yang dapat memperlihatkan statistik lebih jelas
 
-EDA is therefore not merely a preliminary step. It helps determine which statistical methods and machine-learning models are appropriate for the problem.
-
-## 12. References
-
-Bruce, P., Bruce, A., & Gedeck, P. (2020). *Practical Statistics for Data Scientists* (2nd ed.). O'Reilly Media.
+EDA bukan sekedar pendahuluan. Tetapi membantu determinasi metode statistika dan model machine learning mana yang sesuai dengan masalah yang dimiliki.
